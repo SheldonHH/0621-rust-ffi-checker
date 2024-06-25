@@ -17,7 +17,7 @@ int main() {
 
 
 
-    // 失败❌detect，复现：uncomment下面的行，comment上面的行
+    // 失败❌detect，复现：uncomment下面的行，comment上面的两行
     // char* rust_string = combine();
     // Use after free: this will trigger an error
     std::cout << rust_string << std::endl;
