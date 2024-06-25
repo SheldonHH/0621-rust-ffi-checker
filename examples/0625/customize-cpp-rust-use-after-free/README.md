@@ -1,6 +1,15 @@
+## 复现错误
+```bash
+# 运行build.sh
+./build.sh
+```
+
+
 为了演示 Rust 生成内存资源，C++ 获取该资源后 Rust 立即释放，导致 C++ 出现 use-after-free 的场景，我们可以构造一个简单的示例。这个示例包括 Rust 代码创建内存资源并将其暴露给 C++，然后 C++ 在 Rust 释放资源后尝试使用该资源。
 
-## 错误位置
+
+
+## 1. 错误位置
 ```bash
 READ of size 2 at 0xffffb8400b50 thread T0
 #0 0xffffbcfee11c in __interceptor_strlen
