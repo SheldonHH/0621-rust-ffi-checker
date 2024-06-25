@@ -1,3 +1,109 @@
+# 6.24
+##  🌟查看所有安装的Rust工具链版本
+```bash
+rustup toolchain list
+```
+```bash
+rustup toolchain list
+# stable-aarch64-unknown-linux-gnu (default)
+# nightly-2021-12-05-aarch64-unknown-linux-gnu
+# nightly-aarch64-unknown-linux-gnu (override)
+# root@e500e0d544ab:~/trading-programming/rust-ffi-new
+# root@e500e0d544ab:~/trading-programming/rust-ffi-new-checker# 
+rustup toolchain uninstall stable-aarch64-unknown-linux-gnu 
+# info: uninstalling toolchain 'stable-aarch64-unknown-linux-gnu'
+# info: toolchain 'stable-aarch64-unknown-linux-gnu' uninstalled
+
+rustup toolchain uninstall nightly-aarch64-unknown-linux-gnu
+# info: uninstalling toolchain 'nightly-aarch64-unknown-linux-gnu'
+```
+
+### 查看每个工具链版本对应的 Cargo 版本：
+```bash
+rustup toolchain list
+rustup run nightly-2021-12-05-aarch64-unknown-linux-gnu cargo --version
+# cargo 1.58.0-nightly (294967c53 2021-11-29)
+```
+
+
+### rustup和Cargo的关系
+rustup 是 Rust 工具链管理器，用于安装和管理不同版本的 Rust 工具链；cargo 是 Rust 的包管理器和构建工具，对应关系是一对多，一个 Rust 工具链对应一个 Cargo 版本。
+
+### rustup和rustc的关系
+查看特定工具链版本的 rustc 版本：
+```bash
+rustup run nightly-2021-12-05 rustc --version
+```
+rustup 并❌不支持单独升级 rustc 而不更新工具链版本。rustup 管理整个工具链（包括 rustc、cargo 等工具），只能通过切换工具链版本来更改 rustc 的版本。
+### 一般是找Cargo对应的rustup，还是rustup对应的Cargo?
+在网上查找时，一般是找 rustup 对应的 Cargo 版本。也就是说，你先确定要使用的 Rust 工具链版本（如 nightly-2021-12-05），然后查看该版本包含的 Cargo 版本。
+
+
+# 6.21
+## 11pm
+```bash
+## 验证并运行程序
+```bash
+clang: error: invalid linker name in argument '-fuse-ld=lld'
+```
+
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup install nightly-2021-12-05
+source "$HOME/.cargo/env"
+
+# 安装 rustc-dev and llvm-tools-preview:
+rustup component add rustc-dev llvm-tools-preview
+
+# 安装LLVM 13
+sudo apt-get install llvm-13-dev libclang-common-13-dev -y 
+
+
+sudo apt-get install llvm-14-dev libclang-common-14-dev -y 
+
+
+
+cargo install --path .
+cargo build
+```
+
+
+
+### 蒋老师的建议
+Can use this script and update-alternatives to switch clang/llvm versions: https://github.com/ShangjinTang/dotfiles/blob/05ef87daae29475244c276db5d406b58c52be445/linux/ubuntu/22.04/bin/update-alternatives-clang  
+
+
+cf. https://gist.github.com/junkdog/70231d6953592cd6f27def59fe19e50d
+
+One more note: based on the list of llvm-* tools mentioned there, may also need to apt install lld lld-13
+
+
+# linking with cc failed: exit status: 1
+## LLVM 是编译器基础设施，而 Clang 是一个使用 LLVM 构建的 C/C++/Objective-C 编译器前端。
+```bash
+sudo apt install build-essential -y 
+sudo apt install pkg-config libssl-dev -y
+```
+
+## 如何安装LLVM-13对应Clang 
+```bash
+sudo apt-get update -y
+sudo apt-get install llvm-13 clang-13 libclang-common-13-dev -y
+```
+
+# 运行报错 shared libraries找不到
+```bash
+:~/trading-programming/0621-rust-ffi-checker/target/debug# ./cargo-ffi-checker  
+./cargo-ffi-checker: error while loading shared libraries: librustc_driver-f92801b4d17b5b5b.so: cannot open shared object file: No such file or directory
+```
+## 设置 `LD_LIBRARY_PATH` 环境变量
+```bash
+export LD_LIBRARY_PATH=$HOME/.rustup/toolchains/nightly-2021-12-05-aarch64-unknown-linux-gnu/lib:$HOME/.rustup/toolchains/nightly-2021-12-05-aarch64-unknown-linux-gnu/lib/rustlib/aarch64-unknown-linux-gnu/lib:$LD_LIBRARY_PATH
+```
+
+
+
 # FFIChecker: A Static Analysis Tool For Detecting Memory Management Bugs Between Rust and C/C++
 
 [![build](https://github.com/lizhuohua/rust-ffi-checker/actions/workflows/build.yml/badge.svg)](https://github.com/lizhuohua/rust-ffi-checker/actions/workflows/build.yml)
@@ -26,21 +132,21 @@ Information about bugs detected by this tool are listed in [Trophy Case](trophy-
 
 1. Clone the repository
 
-    ```sh
-    $ git clone https://github.com/lizhuohua/rust-ffi-checker.git
-    
-    $ cd rust-ffi-checker
-    ```
+```sh
+$ git clone https://github.com/lizhuohua/rust-ffi-checker.git
+
+$ cd rust-ffi-checker
+```
 
 2. Build & Install
 
-    ```sh
-    # You can build and install the cargo subcommand:
-    $ cargo install --path .
-    
-    # Or, you can only build the checker itself:
-    $ cargo build
-    ```
+```sh
+# You can build and install the cargo subcommand:
+$ cargo install --path .
+
+# Or, you can only build the checker itself:
+$ cargo build
+```
 
 ## Example
 
